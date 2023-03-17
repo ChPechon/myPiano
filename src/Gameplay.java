@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.sound.midi.MidiChannel;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
 public class Gameplay {
     static int CurNote;
@@ -18,10 +19,10 @@ public class Gameplay {
         midiChannel.noteOn(CurNote, 100); // เล่นโน้ตที่สุ่มมาให้ฟังรอบนึง
     }
 
-    public static void notePlay(MidiChannel midiChannel, JButton Play, int midi) {
+    public static void notePlay(MidiChannel midiChannel, JPanel panel, int midi) {
         midiChannel.noteOn(midi, 100);
         if (IsInGame == true && midi == CurNote) { //อยู่ในเกมมั้ย && กดโน้ตตัวเดียวกับที่สุ่มรึเปล่า
-            Play.setVisible(true); // ถ้าใช่ก็ปล่อยปุ่ม Play ออกมา
+            panel.setVisible(true); // ถ้าใช่ก็ปล่อยปุ่ม Play ออกมา
             IsInGame = false; // แล้วก็ปิดเกมด้วย
         } else if (IsInGame == true) { // ถ้าผิดแล้วยังอยู่ในเกม
 
