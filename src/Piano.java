@@ -9,12 +9,15 @@ public class Piano extends JFrame implements ActionListener {
     private JLayeredPane Keyboard;
     private Synthesizer synthesizer;
     private MidiChannel midiChannel;
-    private JPanel panel;
-    private JLabel titles;
+    private JPanel panel, inGamePanel;
+    private JLabel titles, Description;
     private JButton[] key;
     private JCheckBox[] box;
     private Keys    sound;
     private JButton Play;// ปุ่ม Play
+    private JLabel lbYourScore;
+    private JLabel lbScore;
+    private JButton btnNewGame;
 
     public Piano() {
         setSize(900, 800);
@@ -36,11 +39,29 @@ public class Piano extends JFrame implements ActionListener {
     private void ComponentsDetail() {
         Keyboard = getLayeredPane();
         panel = new JPanel();
+        inGamePanel = new JPanel();
+        Description = new JLabel();
         titles = new JLabel("Ear Training");
         Play = new JButton("Play");
-        Play.setBounds(380, 650, 120, 40);
+        Play.setBounds(460, 650, 120, 40);
         Play.setFocusable(false);
         Play.addActionListener(this);
+        // label YourScore
+        lbYourScore = new JLabel("Your Score");
+        lbYourScore.setBounds(700, 700, 100, 100);
+        add(lbYourScore);
+
+        //label Score
+        lbScore = new JLabel("0");
+        lbScore.setBounds(800, 700, 100, 100);
+        add(lbScore);
+
+        //button NewGame
+        btnNewGame = new JButton("New Game");
+        btnNewGame.setBounds(300, 650, 120, 40);
+        btnNewGame.setFocusable(false);
+        panel.add(btnNewGame);
+        buttonNewGame();
         key = new JButton[12];
         box = new JCheckBox[12];
         sound = Keys.C;
@@ -71,16 +92,23 @@ public class Piano extends JFrame implements ActionListener {
             setCheckBox(box[i], (100 * (i - 6)) + 120, 220, panel);
             sound = Keys.values()[(sound.ordinal() + 1) % 12];
         }
+        
         panel.setBounds(10, 10, 800, 700);
+        inGamePanel.setBounds(10, 10, 800, 700);
         panel.setVisible(true);
+        inGamePanel.setVisible(true);
         panel.setLayout(null);
-        //panel.setBackground(Color.gray);
+        inGamePanel.setLayout(null);
         titles.setVisible(true);
         titles.setBounds(320, 5, 400, 200);
         titles.setFont(new Font("Times New Roman", Font.PLAIN, 50));
-        panel.add(titles);
+        Description.setText("Choose the note of what you hear...");
+        Description.setBounds(320, 120, 600, 200);
+        inGamePanel.add(Description);
         panel.add(Play);
+        add(titles);
         add(panel);
+        add(inGamePanel);
     }
 
     private void setWhiteNoteDetails(JButton key, int x, int y, int z) {
@@ -107,25 +135,45 @@ public class Piano extends JFrame implements ActionListener {
         box.setFocusable(false);
         panel.add(box);
     }
-    
-        @Override
-        public void actionPerformed(ActionEvent ev) {
-            JButton source = (JButton)ev.getSource();
-            if (source == Play) { // ถ้ากด play
-                for (int i = 0; i < 12; i++)
-                    if (box[i].isSelected() == true)
-                        Gameplay.addNoteToBox(Integer.valueOf(box[i].getName()));
-                Gameplay.randomNote(midiChannel); // ก็สุ่มโน้ต
-                Gameplay.IsInGame = true; // แล้วก็เปิดเกม
-                panel.setVisible(false); // ปิดปุ่มไปซะ
-            }
 
-            //โซนนี้คือเล่นโน้ตแล้วส่งโน้ตไปเช็ค
-            for (int i = 0; i < 12; i++) {
-                if (source == key[i]) 
-                    Gameplay.notePlay(midiChannel, panel, Integer.valueOf(key[i].getName()));
+    private void buttonNewGame(){
+        btnNewGame.addActionListener(this);
+    }
+
+    //void NewGame
+    public void NewGame(){
+        Gameplay.score = 0;
+        lbScore.setText("" + Gameplay.score);
+    }
+    // count score
+    public void CountScore(){
+        lbScore.setText("" + Gameplay.score);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent ev) {
+        JButton source = (JButton)ev.getSource();
+        if (source == Play) { // ถ้ากด play
+            for (int i = 0; i < 12; i++)
+                if (box[i].isSelected() == true)
+                    Gameplay.addNoteToBox(Integer.valueOf(box[i].getName()));
+            Gameplay.randomNote(midiChannel); // ก็สุ่มโน้ต
+            Gameplay.IsInGame = true; // แล้วก็เปิดเกม
+            panel.setVisible(false); // ปิดปุ่มไปซะ
+            inGamePanel.setVisible(true);
+        }
+        else if (source == btnNewGame) {
+            NewGame();
+        }
+
+        //โซนนี้คือเล่นโน้ตแล้วส่งโน้ตไปเช็ค
+        for (int i = 0; i < 12; i++) {
+            if (source == key[i]) {
+                Gameplay.notePlay(midiChannel, panel, Integer.valueOf(key[i].getName()));
+                CountScore();
             }
         }
+    }
 
     public static void main(String[] args) {
         new Piano();

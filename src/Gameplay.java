@@ -9,6 +9,7 @@ public class Gameplay {
     static int CurNote;
     static boolean IsInGame = false;
     static ArrayList<Integer> noteBox = new ArrayList<>();
+    static int score;
 
     public static void addNoteToBox(int midi) {
         noteBox.add(midi);
@@ -24,6 +25,7 @@ public class Gameplay {
         if (IsInGame == true && midi == CurNote) { //อยู่ในเกมมั้ย && กดโน้ตตัวเดียวกับที่สุ่มรึเปล่า
             panel.setVisible(true); // ถ้าใช่ก็ปล่อยปุ่ม Play ออกมา
             noteBox.clear();
+            score += 1;
             IsInGame = false; // แล้วก็ปิดเกมด้วย
         } else if (IsInGame == true) { // ถ้าผิดแล้วยังอยู่ในเกม
 
