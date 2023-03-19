@@ -3,6 +3,7 @@ package myPiano.src;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.sound.midi.MidiChannel;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Gameplay {
@@ -11,13 +12,26 @@ public class Gameplay {
     static ArrayList<Integer> noteBox = new ArrayList<>();
     static int score;
 
+    public Gameplay() {
+        
+    }
+
     public static void addNoteToBox(int midi) {
         noteBox.add(midi);
     }
 
     public static void randomNote(MidiChannel midiChannel) {
-        CurNote = noteBox.get(new Random().nextInt(noteBox.size())); //สุ่มตั้งแต่ 60 ถึง 71 (12 ตัว)
+        CurNote = noteBox.get(new Random().nextInt(noteBox.size()));
         midiChannel.noteOn(CurNote, 100); // เล่นโน้ตที่สุ่มมาให้ฟังรอบนึง
+    }
+
+    public static void NewGame(JLabel lbScore){
+        score = 0;
+        CountScore(lbScore);
+    }
+
+    public static void CountScore(JLabel lbScore){
+        lbScore.setText("" + Gameplay.score);
     }
 
     public static void notePlay(MidiChannel midiChannel, JPanel panel, int midi) {
